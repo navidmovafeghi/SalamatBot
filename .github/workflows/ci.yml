@@ -11,19 +11,13 @@ on:
 jobs:
   verify-workspace:
     runs-on: ubuntu-latest
-
-    # --- ADD THIS BLOCK ---
-    defaults:
-      run:
-        working-directory: ./SalamatBot
-    # ----------------------
+    # NO 'defaults' block is needed anymore. We will run everything from the root.
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # We need to check out the code INTO the directory we are working from
-        with:
-          path: './SalamatBot'
+        # We REMOVED the 'with: path:' block.
+        # This checks out the code directly into the workspace root.
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v3
@@ -35,8 +29,8 @@ jobs:
         with:
           node-version: '20'
           cache: 'pnpm'
-          # Tell the cache where to find the lockfile now
-          cache-dependency-path: './SalamatBot/pnpm-lock.yaml'
+          # The path is now simple because we are at the root.
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
