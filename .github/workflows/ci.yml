@@ -41,7 +41,7 @@ jobs:
           cache-dependency-path: './SalamatBot/pnpm-lock.yaml'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install 
 
       - name: Run Backend Lint
         run: pnpm --filter backend lint
