@@ -9,32 +9,39 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # Job to verify all code in the workspace
   verify-workspace:
     runs-on: ubuntu-latest
+
+    # --- ADD THIS BLOCK ---
+    defaults:
+      run:
+        working-directory: ./SalamatBot
+    # ----------------------
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        # We need to check out the code INTO the directory we are working from
+        with:
+          path: './SalamatBot'
 
-      # This is the official action to set up pnpm
       - name: Set up pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 8 # Or your desired pnpm version
+          version: 8
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm' # CRITICAL: Use the pnpm cache
+          cache: 'pnpm'
+          # Tell the cache where to find the lockfile now
+          cache-dependency-path: './SalamatBot/pnpm-lock.yaml'
 
       - name: Install dependencies
-        # --frozen-lockfile is the equivalent of 'npm ci' for pnpm.
-        # It ensures the build is exactly as specified in the lockfile.
         run: pnpm install --frozen-lockfile
 
       - name: Run Backend Lint
-        # Use the --filter flag to target a specific workspace package
         run: pnpm --filter backend lint
 
       - name: Run Backend Build
