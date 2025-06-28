@@ -1,0 +1,34 @@
+# ./docker-compose.yml
+
+
+services:
+  # PostgreSQL Database Service
+  postgres_db:
+    image: postgres:15
+    container_name: salamatbot_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: salamatbot_user
+      POSTGRES_PASSWORD: a_very_strong_password_change_me
+      POSTGRES_DB: salamatbot_db
+    ports:
+      - "5432:5432" # Map container port to host port
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist data
+
+  # Redis Cache & Queue Broker Service
+  redis_cache:
+    image: redis:7
+    container_name: salamatbot_redis
+    restart: always
+    ports:
+      - "6379:6379" # Map container port to host port
+    command: redis-server --save 60 1 --loglevel warning # Persist cache to disk
+    volumes:
+      - redis_data:/data # Persist data
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
